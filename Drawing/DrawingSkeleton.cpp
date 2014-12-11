@@ -1,14 +1,15 @@
 /* 
 	Simple skeleton program that pops open an sdl
 	window and draws a triangle, good to use so you don't have 
-	to repeat boilerplate crude
+	to repeat boilerplate crud
 */
 
 
 // Headers
 #include <cstdio>
 #include <cstdlib>
-
+#include <time.h>
+#include <math.h>
 
 #include <GL/glew.h>
 
@@ -33,12 +34,15 @@ GLchar* fragFile = "./frag.fshader";
 const GLchar* vertexSource;
 const GLchar* fragmentSource;
 
+// OpenGL color
+GLint uniColor;
+
 // Vertices
 GLfloat vertices[] =
 {
-	0.0f, 0.5f,
-	0.5f, -0.5f,
-	-0.5f, -0.5f
+	0.0f, 0.5f, 1.0f, 0.0f, 0.0f,
+	0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f, 0.0f, 1.0f
 };
 
 
@@ -126,8 +130,12 @@ void initShaders()
 
 	// Specify the layout of the vertex data
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+	
+	GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
+	glEnableVertexAttribArray(colAttrib);
+	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 
 	GLuint vertexBuffer;
 	glGenBuffers(1, &vertexBuffer);
@@ -139,7 +147,7 @@ void initShaders()
 void display()
 {
 	SDL_Event windowEvent;
-
+	
 	while (true)
 	{
 		if (SDL_PollEvent(&windowEvent))
