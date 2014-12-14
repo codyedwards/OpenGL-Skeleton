@@ -21,6 +21,7 @@ using namespace std;
 // Global OpenGL variables
 GLuint vao;
 GLuint vbo;
+GLuint ebo;
 
 // Global SDL variables
 SDL_Window* window;
@@ -40,9 +41,17 @@ GLint uniColor;
 // Vertices
 GLfloat vertices[] =
 {
-	0.0f, 0.5f, 1.0f, 0.0f, 0.0f,
-	0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f, 0.0f, 1.0f
+	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, // Top-left
+	0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	-0.5f, -0.5f, 1.0f, 1.0f, 1.0f // Bottom-left
+};
+
+// Elements
+GLuint elements[] =
+{
+	0, 1, 2,
+	2, 3, 0
 };
 
 
@@ -103,6 +112,13 @@ void initVBOs()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 }
 
+void initEBOs()
+{
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+}
+
 // Initialize shaders, bind them
 void initShaders()
 {
@@ -160,7 +176,7 @@ void display()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// Swap buffers
 		SDL_GL_SwapWindow(window);
@@ -176,6 +192,7 @@ int main(int argc, char *argv[])
 	initGLEW();
 	initVAOs();
 	initVBOs();
+	initEBOs();
 	initShaders();
 	display();
 
