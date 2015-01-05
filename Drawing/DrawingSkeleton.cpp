@@ -16,6 +16,8 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+#include <SOIL.h>
+
 using namespace std;
 
 // Global OpenGL variables
@@ -40,11 +42,11 @@ GLint uniColor;
 
 // Vertices
 GLfloat vertices[] =
-{
-	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-	0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-	-0.5f, -0.5f, 1.0f, 1.0f, 1.0f // Bottom-left
+{// Position    //Colour           //Texcoords
+	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,// Top-left
+	0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,// Top-right
+	0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // Bottom-right
+	-0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f// Bottom-left
 };
 
 // Elements
@@ -53,6 +55,11 @@ GLuint elements[] =
 	0, 1, 2,
 	2, 3, 0
 };
+
+// Textures
+GLuint tex;
+int width, height;
+char* texSource = "./content/sample.png";
 
 
 char* filetobuf(char *file)
@@ -159,6 +166,14 @@ void initShaders()
 	printf("%u\n", vertexBuffer);
 }
 
+// Initialize the Textures
+void initTextures()
+{
+	glGenTextures(1, &tex);
+	unsigned char* image = SOIL_load_image(texSource, &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+}
+
 // Draw stuff
 void display()
 {
@@ -194,6 +209,7 @@ int main(int argc, char *argv[])
 	initVBOs();
 	initEBOs();
 	initShaders();
+	initTextures();
 	display();
 
 	return 0;
