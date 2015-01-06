@@ -35,6 +35,7 @@ GLchar* fragFile = "./frag.fshader";
 // Shaders
 const GLchar* vertexSource;
 const GLchar* fragmentSource;
+GLuint shaderProgram;
 
 // OpenGL color
 GLint uniColor;
@@ -56,8 +57,9 @@ GLuint elements[] =
 };
 
 // Textures
-GLuint tex;
-char* texSource = "./content/sample.png";
+GLuint textures[2];
+char* kitty = "./content/sample.png";
+char* puppy = "./content/sample2.png";
 
 
 char* filetobuf(char *file)
@@ -142,7 +144,7 @@ void initShaders()
 	glCompileShader(fragmentShader);
 
 	// Link the vertex and fragment shader into a shader program
-	GLuint shaderProgram = glCreateProgram();
+	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glBindFragDataLocation(shaderProgram, 0, "outColor");
@@ -171,12 +173,29 @@ void initShaders()
 // Initialize the Textures
 void initTextures()
 {
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
+	glGenTextures(2, textures);
+	
+	SDL_Surface* surface;
 
-	SDL_Surface* surface = IMG_Load(texSource);
+	// load in Kitty
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	surface = IMG_Load(kitty);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
 	SDL_FreeSurface(surface);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texKitten"), 0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	surface = IMG_Load(puppy);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	SDL_FreeSurface(surface);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texPuppy"), 1);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
