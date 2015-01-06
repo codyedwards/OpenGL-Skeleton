@@ -16,6 +16,9 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
@@ -208,6 +211,19 @@ void display()
 {
 	SDL_Event windowEvent;
 	
+	// Set up projection
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(1.2f, 1.2f, 1.2f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+		);
+	GLint uniView = glGetUniformLocation(shaderProgram, "view");
+	glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+
+	glm::mat4 proj = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 10.0f);
+	GLint uniProj = glGetUniformLocation(shaderProgram, "proj");
+	glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
 	while (true)
 	{
 		if (SDL_PollEvent(&windowEvent))
@@ -218,6 +234,16 @@ void display()
 		// Clear the screen to black
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Calculate transformation
+		glm::mat4 model;
+		model = glm::rotate(model, (float)clock() / (float)CLOCKS_PER_SEC * 3.1415f, glm::vec3(0.0f, 0.0f, 1.0f));
+
+		glm::vec4 result = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		printf("%f,, %f, %f\n", result.x, result.y, result.z);
+
+		GLint uniTrans = glGetUniformLocation(shaderProgram, "model");
+		glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(model));
 
 		// draw
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
