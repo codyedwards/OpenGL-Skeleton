@@ -84,8 +84,10 @@
     <ClCompile Include="DrawingSkeleton.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.fshader" />
-    <None Include="vertex.vshader" />
+    <None Include="sceneFrag.fshader" />
+    <None Include="screenFrag.fshader" />
+    <None Include="screenVertex.vshader" />
+    <None Include="sceneVertex.vshader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />

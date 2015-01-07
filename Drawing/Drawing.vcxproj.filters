@@ -18,10 +18,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertex.vshader">
+    <None Include="screenFrag.fshader">
       <Filter>Shader Files</Filter>
     </None>
-    <None Include="frag.fshader">
+    <None Include="screenVertex.vshader">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="sceneFrag.fshader">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="sceneVertex.vshader">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
