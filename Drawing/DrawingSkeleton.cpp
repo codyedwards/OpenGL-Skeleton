@@ -471,7 +471,7 @@ void display()
 		glm::mat4 model;
 		model = glm::rotate(model, (GLfloat)clock() / (GLfloat)CLOCKS_PER_SEC * 3.1415f, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix2fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 
 		// Draw cube
